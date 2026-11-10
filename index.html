@@ -4,420 +4,192 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CoFind | UPNM Lost & Found</title>
+  <title>CoFind | Lost Today, Found Together</title>
   <link rel="stylesheet" href="style.css">
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="script.js" defer></script>
 </head>
-
 <body>
+  <header class="header">
+    <a class="brand" href="#home">
+      <span class="brand-icon">C</span>
+      <span>CoFind</span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+    <nav id="mainNav">
+      <a href="#home">Home</a>
+      <a href="#browse">Browse Items</a>
+      <a href="#report">Post a Report</a>
+      <a href="#smartqr">Smart QR</a>
+      <a href="#myreports">My Reports</a>
+    </nav>
+  </header>
 
-<header>
-  <a class="logo" href="#" data-page="home">
-    C <span>Co<span class="red">Find</span>
-    <small>UPNM LOST & FOUND</small></span>
-  </a>
-
-  <button id="menuBtn">☰</button>
-
-  <nav id="nav">
-    <a href="#" data-page="home">Home</a>
-    <a href="#" data-page="browse">Browse Items</a>
-    <a href="#" data-page="report">Post a Report</a>
-    <a href="#" data-page="smartqr">Smart QR</a>
-    <a href="#" data-page="myreports">My Reports</a>
-  </nav>
-</header>
-
-<main>
-
-<!-- HOME PAGE -->
-<section id="home" class="page active">
-
-  <div class="hero">
-    <div>
-      <small class="eyebrow">UPNM STUDENT COMMUNITY</small>
-
-      <h1>Lost Today,<br><span>Found Together.</span></h1>
-
-      <p>
-        A simple platform to report lost belongings,
-        find items and reconnect them with their owners.
-      </p>
-
-      <button class="btn redbtn" data-page="browse">
-        Browse Items
-      </button>
-
-      <button class="btn outline" data-page="report">
-        Post a Report
-      </button>
-    </div>
-
-    <div class="hero-side">
-      <div class="symbol">⌕</div>
-      <h2>Find What Matters</h2>
-      <p>Two ways to reunite belongings with their owners.</p>
-    </div>
-  </div>
-
-  <div class="stats">
-    <div><b id="total">0</b><small>Total Reports</small></div>
-    <div><b id="lost">0</b><small>Lost</small></div>
-    <div><b id="found">0</b><small>Found</small></div>
-    <div><b id="returned">0</b><small>Returned</small></div>
-  </div>
-
-  <div class="section">
-    <small class="eyebrow">TWO WAYS TO RECONNECT</small>
-    <h2>How CoFind Works</h2>
-
-    <div class="features">
-
-      <article>
-        <div class="symbol smallsymbol">📦</div>
-        <h3>Free Community Report</h3>
-        <p>
-          Anyone can post or browse lost and found reports
-          for free. No Smart QR purchase is required.
-        </p>
-        <button class="linkbtn" data-page="report">
-          Post a free report →
-        </button>
-      </article>
-
-      <article>
-        <div class="symbol smallsymbol">▦</div>
-        <h3>Paid Personal Smart QR</h3>
-        <p>
-          Buy one personal QR Code and attach it to all
-          your belongings. A finder scans it to open
-          your CoFind contact page.
-        </p>
-        <button class="linkbtn" data-page="smartqr">
-          Get Smart QR →
-        </button>
-      </article>
-
-    </div>
-  </div>
-
-  <div class="section">
-    <small class="eyebrow">COMMUNITY LISTINGS</small>
-    <h2>Recent Reports</h2>
-    <div id="homeListings" class="cards"></div>
-  </div>
-
-  <div class="notice">
-    <b>Safety reminder</b>
-    <p>
-      Meet in a safe public place when returning belongings.
-      Avoid sharing sensitive personal information in public listings.
-    </p>
-  </div>
-
-</section>
-
-
-<!-- BROWSE ITEMS -->
-<section id="browse" class="page">
-
-  <small class="eyebrow">COMMUNITY LISTINGS</small>
-  <h1>Browse Items</h1>
-  <p class="muted">Search reports shared by the UPNM community.</p>
-
-  <div class="filters">
-    <input id="search" placeholder="Search item or location...">
-
-    <select id="status">
-      <option value="all">All statuses</option>
-      <option>Lost</option>
-      <option>Found</option>
-      <option>Returned</option>
-    </select>
-
-    <select id="category">
-      <option value="all">All categories</option>
-      <option>Electronics</option>
-      <option>Personal Items</option>
-      <option>Documents</option>
-      <option>Accessories</option>
-      <option>Others</option>
-    </select>
-  </div>
-
-  <div id="allListings" class="cards"></div>
-
-</section>
-
-
-<!-- REPORT ITEM -->
-<section id="report" class="page">
-
-  <small class="eyebrow">FREE COMMUNITY FEATURE</small>
-  <h1>Post a Lost or Found Item</h1>
-
-  <p class="muted">
-    Posting and browsing reports is free.
-    You do not need to buy Smart QR.
-  </p>
-
-  <div class="panel">
-
-    <div class="tabs">
-      <button id="lostTab" class="active">I Lost an Item</button>
-      <button id="foundTab">I Found an Item</button>
-    </div>
-
-    <form id="reportForm">
-
-      <label>Item name *</label>
-      <input id="itemName" required placeholder="e.g. Black wallet">
-
-      <label>Category *</label>
-      <select id="itemCategory" required>
-        <option value="">Choose category</option>
-        <option>Electronics</option>
-        <option>Personal Items</option>
-        <option>Documents</option>
-        <option>Accessories</option>
-        <option>Others</option>
-      </select>
-
-      <label>Location *</label>
-      <input id="itemLocation" required placeholder="e.g. Library, UPNM">
-
-      <label>Date *</label>
-      <input id="itemDate" type="date" required>
-
-      <label>Description *</label>
-      <textarea id="itemDescription" rows="4" required></textarea>
-
-      <label>Photo (optional)</label>
-      <input id="itemPhoto" type="file" accept="image/*">
-
-      <small class="muted">Image limit for this prototype: 700KB.</small>
-
-      <label>Your name *</label>
-      <input id="reporterName" required>
-
-      <label>Contact email *</label>
-      <input id="reporterEmail" type="email" required>
-
-      <button class="btn redbtn full">
-        Publish Free Report
-      </button>
-
-    </form>
-  </div>
-
-</section>
-
-
-<!-- SMART QR -->
-<section id="smartqr" class="page">
-
-  <small class="eyebrow">OPTIONAL PAID FEATURE</small>
-  <h1>CoFind Personal Smart QR</h1>
-
-  <p class="muted">
-    One personal QR Code for all your belongings.
-  </p>
-
-  <div class="pricing">
-
-    <div>
-      <small class="eyebrow">ONE-TIME PURCHASE · PROPOSED PRICE</small>
-
-      <h2>Personal Smart QR</h2>
-
-      <div class="price">
-        RM5.00 <small>one-time</small>
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <span class="eyebrow">UPNM LOST & FOUND COMMUNITY</span>
+        <h1>Lost Today,<br><span>Found Together.</span></h1>
+        <p>Helping the campus community reconnect with their lost belongings through a simple and convenient platform.</p>
+        <div class="hero-actions">
+          <a class="btn btn-red" href="#browse">Browse Items</a>
+          <a class="btn btn-outline" href="#report">Post a Report</a>
+        </div>
       </div>
+      <div class="hero-art">
+        <div class="art-circle">C</div>
+        <div class="art-card">
+          <span class="art-check">✓</span>
+          <div><strong>Find what matters.</strong><small>One community, one purpose.</small></div>
+        </div>
+      </div>
+    </section>
 
-      <ul>
-        <li>One unique QR Code for one owner</li>
-        <li>Use it on multiple personal belongings</li>
-        <li>Download and print your QR</li>
-        <li>Finder can open your CoFind contact page</li>
-      </ul>
+    <section class="stats">
+      <div><strong>Community</strong><span>Powered by students</span></div>
+      <div><strong>Free Reports</strong><span>Post lost and found items</span></div>
+      <div><strong>Smart QR</strong><span>Connect with item owners</span></div>
+    </section>
+
+    <section class="section" id="browse">
+      <div class="section-heading">
+        <div><span class="eyebrow">COMMUNITY LISTINGS</span><h2>Browse Items</h2><p>Explore items reported lost or found by the community.</p></div>
+      </div>
+      <div class="filter-bar">
+        <input id="searchInput" type="search" placeholder="Search item or location...">
+        <select id="categoryFilter">
+          <option value="">All Categories</option>
+          <option>Electronics</option><option>Wallet / Purse</option>
+          <option>Documents</option><option>Keys</option>
+          <option>Clothing</option><option>Others</option>
+        </select>
+        <select id="statusFilter">
+          <option value="">All Reports</option>
+          <option value="Lost">Lost</option>
+          <option value="Found">Found</option>
+        </select>
+      </div>
+      <div id="listingGrid" class="listing-grid"></div>
+      <p id="emptyBrowse" class="empty-state" hidden>No reports found. Be the first to post a report!</p>
+    </section>
+
+    <section class="section section-soft" id="report">
+      <div class="section-heading">
+        <div><span class="eyebrow">FREE COMMUNITY SERVICE</span><h2>Post a Report</h2><p>Report a lost or found item to help reconnect it with its owner.</p></div>
+      </div>
+      <form id="reportForm" class="form-card">
+        <div class="form-grid">
+          <label>Report Type *
+            <select id="reportType" required><option value="Lost">Lost Item</option><option value="Found">Found Item</option></select>
+          </label>
+          <label>Item Name *
+            <input id="itemName" required maxlength="70" placeholder="e.g. Black wallet">
+          </label>
+          <label>Category *
+            <select id="itemCategory" required>
+              <option value="">Select category</option>
+              <option>Electronics</option><option>Wallet / Purse</option>
+              <option>Documents</option><option>Keys</option>
+              <option>Clothing</option><option>Others</option>
+            </select>
+          </label>
+          <label>Location *
+            <input id="itemLocation" required placeholder="Where was it lost or found?">
+          </label>
+          <label>Date *
+            <input id="itemDate" type="date" required>
+          </label>
+          <label>Your Name *
+            <input id="reporterName" required placeholder="Your name">
+          </label>
+          <label class="full-width">Contact Email *
+            <input id="reporterEmail" type="email" required placeholder="you@example.com">
+          </label>
+          <label class="full-width">Description *
+            <textarea id="itemDescription" required rows="4" placeholder="Describe the item and any useful details..."></textarea>
+          </label>
+          <label class="full-width">Item Photo (optional)
+            <input id="itemPhoto" type="file" accept="image/*">
+            <small>Maximum image size: 700KB.</small>
+          </label>
+        </div>
+        <button class="btn btn-red" type="submit">Publish Report</button>
+        <p id="reportMessage" class="form-message" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="section smart-section" id="smartqr">
+      <div class="smart-copy">
+        <span class="eyebrow">PERSONAL ITEM PROTECTION</span>
+        <h2>One QR.<br><span>All Your Belongings.</span></h2>
+        <p>Get one personal Smart QR code and attach it to your belongings. When someone scans it, they can access your contact page and reach you.</p>
+        <ul>
+          <li>One personal QR code per owner</li>
+          <li>Attach it to different belongings</li>
+          <li>Help finders contact you</li>
+        </ul>
+        <p class="price">RM5 <small>one-time demo price</small></p>
+        <button class="btn btn-red" id="buyQrBtn" type="button">Get My Smart QR</button>
+        <p class="note">Demo purchase only. No real payment is collected.</p>
+      </div>
+      <div class="qr-preview">
+        <div class="qr-placeholder">▦</div>
+        <h3>Your Personal Smart QR</h3>
+        <p>Scan to contact the owner</p>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="myreports">
+      <div class="section-heading">
+        <div><span class="eyebrow">YOUR ACTIVITY</span><h2>My Reports</h2><p>Enter the email address used when submitting your reports.</p></div>
+      </div>
+      <div class="my-reports-search">
+        <input id="myEmail" type="email" placeholder="Enter your email address">
+        <button class="btn btn-navy" id="findReportsBtn" type="button">Find My Reports</button>
+      </div>
+      <div id="myReportsGrid" class="listing-grid"></div>
+      <p id="emptyMine" class="empty-state">Enter your email to view your reports.</p>
+    </section>
+
+    <section class="section contact-section" id="contact">
+      <span class="eyebrow">COFIND COMMUNITY</span>
+      <h2>Lost something? Found something?</h2>
+      <p>Every report can make a difference. Let's help each other.</p>
+      <a href="#report" class="btn btn-red">Create a Report</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="brand footer-brand" href="#home"><span class="brand-icon">C</span><span>CoFind</span></a>
+    <p>Lost Today, Found Together.</p>
+    <small>Independent student project concept. Not an official UPNM service.</small>
+  </footer>
+
+  <div class="modal" id="itemModal" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close" id="closeModal" aria-label="Close">×</button>
+      <div id="modalContent"></div>
     </div>
+  </div>
 
-    <div class="pay">
-      <p class="muted">
-        Prototype checkout only. No real money will be charged.
-      </p>
-
-      <button id="buy" class="btn redbtn full">
-        Buy Smart QR — RM5.00
-      </button>
-
-      <small class="muted">
-        A real payment gateway is required before accepting actual payments.
-      </small>
+  <section class="owner-page" id="ownerPage" hidden>
+    <div class="owner-card">
+      <a class="brand" href="index.html"><span class="brand-icon">C</span><span>CoFind</span></a>
+      <span class="eyebrow">SMART QR CONTACT</span>
+      <h1>Contact the Owner</h1>
+      <p id="ownerIntro">You have scanned a CoFind Smart QR code.</p>
+      <form id="ownerContactForm">
+        <label>Your Name<input id="finderName" required placeholder="Enter your name"></label>
+        <label>Your Email<input id="finderEmail" type="email" required placeholder="Enter your email"></label>
+        <label>Message<textarea id="finderMessage" rows="4" required placeholder="Tell the owner where you found the item..."></textarea></label>
+        <button class="btn btn-red" type="submit">Contact Owner</button>
+      </form>
+      <p id="ownerMessage" class="form-message"></p>
+      <a class="back-link" href="index.html">Back to CoFind</a>
     </div>
-
-  </div>
-
-  <!-- OWNER PROFILE -->
-  <div id="ownerSetup" class="panel hidden">
-
-    <span class="pill">Demo purchase activated</span>
-
-    <h2>Create your owner profile</h2>
-
-    <form id="ownerForm">
-
-      <label>Full name *</label>
-      <input id="ownerName" required>
-
-      <label>Email address *</label>
-      <input id="ownerEmail" type="email" required>
-
-      <label>Message for finder (optional)</label>
-      <textarea id="ownerMessage" rows="3"
-        placeholder="Thank you for helping return my belongings."></textarea>
-
-      <button class="btn redbtn full">
-        Generate My Smart QR
-      </button>
-
-    </form>
-  </div>
-
-  <!-- QR RESULT -->
-  <div id="qrResult" class="panel center hidden">
-
-    <div id="qrcode"></div>
-
-    <h2 id="qrName"></h2>
-
-    <p class="muted">Your personal CoFind Smart QR</p>
-
-    <p id="qrId" class="eyebrow"></p>
-
-    <button id="download" class="btn redbtn">
-      Download QR
-    </button>
-
-    <button id="copy" class="btn outline dark">
-      Copy Link
-    </button>
-
-    <p class="muted tiny">
-      Print this QR and attach it to all your belongings.
-    </p>
-
-  </div>
-
-  <div class="notice">
-    <b>Two access options</b>
-    <p>
-      Users who do not buy Smart QR can still post and browse
-      community reports for free. Users who purchase Smart QR
-      receive one personal QR that can be attached to all their
-      belongings. A finder scans it to open the owner's contact page.
-    </p>
-  </div>
-
-</section>
-
-
-<!-- MY REPORTS -->
-<section id="myreports" class="page">
-
-  <small class="eyebrow">YOUR ACTIVITY</small>
-  <h1>My Reports</h1>
-
-  <p class="muted">
-    Enter the email address used when submitting your report.
-  </p>
-
-  <div class="panel compact">
-
-    <label>Your email</label>
-    <input id="myEmail" type="email">
-
-    <button id="loadMine" class="btn redbtn full">
-      Show My Reports
-    </button>
-
-  </div>
-
-  <div id="myListings" class="cards"></div>
-
-</section>
-
-
-<!-- SMART QR OWNER CONTACT PAGE -->
-<section id="ownerPage" class="page">
-
-  <small class="eyebrow">COFIND SMART QR</small>
-  <h1>Contact the Owner</h1>
-
-  <p class="muted">
-    You scanned a CoFind Personal Smart QR.
-  </p>
-
-  <div class="panel compact center">
-
-    <div class="avatar">C</div>
-
-    <h2 id="publicName"></h2>
-    <p id="publicMessage" class="muted"></p>
-
-    <form id="finderForm" class="left">
-
-      <label>Your name *</label>
-      <input id="finderName" required>
-
-      <label>Your email *</label>
-      <input id="finderEmail" type="email" required>
-
-      <label>Message *</label>
-      <textarea id="finderText" required rows="4"
-        placeholder="I found an item that may belong to you..."></textarea>
-
-      <button class="btn redbtn full">
-        Prepare Email to Owner
-      </button>
-
-    </form>
-
-    <small class="muted">
-      Demo: opens your email app. A secure messaging service
-      is needed for in-site messages.
-    </small>
-
-  </div>
-
-</section>
-
-
-<!-- ITEM MODAL -->
-<div id="modal" class="modal">
-
-  <div class="modalbox">
-
-    <button id="close" class="close">×</button>
-
-    <div id="modalBody"></div>
-
-  </div>
-
-</div>
-
-</main>
-
-
-<footer>
-  <b>Co<span class="red">Find</span></b>
-  <p>Lost Today, Found Together.</p>
-  <small>Independent student project concept · UPNM · Prototype</small>
-</footer>
-
+  </section>
 </body>
 </html>
+

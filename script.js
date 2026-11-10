@@ -1,674 +1,398 @@
 
-const REPORT_KEY = "cofind_reports_paid_v1";
+const $ = (id) => document.getElementById(id);
+
+const REPORTS_KEY = "cofind_reports_paid_v1";
 const OWNER_KEY = "cofind_owner_paid_v1";
-const PAID_KEY = "cofind_qr_paid_v1";
+const QR_KEY = "cofind_qr_paid_v1";
 
-const $ = id => document.getElementById(id);
+let reports = JSON.parse(localStorage.getItem(REPORTS_KEY) || "[]");
 
-const reports = () =>
-  JSON.parse(localStorage.getItem(REPORT_KEY) || "[]");
-
-const saveReports = data =>
-  localStorage.setItem(REPORT_KEY, JSON.stringify(data));
-
-let kind = "Lost";
-let scannedOwner = null;
-
-const id = prefix =>
-  prefix + Date.now().toString(36).toUpperCase();
-
-const esc = value =>
-  String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  }[char]));
-
-
-/* PAGE NAVIGATION */
-
-function page(name) {
-
-  document.querySelectorAll(".page").forEach(section => {
-    section.classList.remove("active");
-  });
-
-  $(name).classList.add("active");
-
-  $("nav").classList.remove("open");
-
-  if (name === "home") home();
-  if (name === "browse") browse();
-  if (name === "smartqr") qrState();
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
+function saveReports() {
+  localStorage.setItem(REPORTS_KEY, JSON.stringify(reports));
 }
 
-document.querySelectorAll("[data-page]").forEach(button => {
-
-  button.addEventListener("click", event => {
-
-    event.preventDefault();
-
-    page(button.dataset.page);
-
-  });
-
-});
-
-$("menuBtn").onclick = () =>
-  $("nav").classList.toggle("open");
-
-
-/* HOME PAGE */
-
-function home() {
-
-  let data = reports();
-
-  $("total").textContent = data.length;
-
-  $("lost").textContent =
-    data.filter(item => item.status === "Lost").length;
-
-  $("found").textContent =
-    data.filter(item => item.status === "Found").length;
-
-  $("returned").textContent =
-    data.filter(item => item.status === "Returned").length;
-
-  cards(
-    "homeListings",
-    data.slice().reverse().slice(0, 3)
-  );
-
+function escapeHTML(value = "") {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#039;"
+  })[char]);
 }
 
+function formatDate(value) {
+  if (!value) return "Date not stated";
+  const date = new Date(value + "T00:00:00");
+  return Number.isNaN(date.getTime())
+    ? escapeHTML(value)
+    : date.toLocaleDateString("en-MY", {
+        day: "numeric", month: "short", year: "numeric"
+      });
+}
 
-/* DISPLAY ITEM CARDS */
+function makeId() {
+  return "item-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
+}
 
-function cards(target, items) {
+function createItemCard(item, showDelete = false) {
+  const statusClass = item.type === "Found" ? "found" : "";
+  const image = item.photo
+    ? `<img src="${item.photo}" alt="${escapeHTML(item.name)}">`
+    : "";
 
-  let container = $(target);
-
-  if (!items.length) {
-
-    container.innerHTML = `
-      <div class="empty">
-        No reports yet.
-        Be the first to post a report.
+  return `
+    <article class="item-card">
+      ${image}
+      <div class="item-card-body">
+        <div class="item-meta">
+          <span class="status ${statusClass}">${escapeHTML(item.type)}</span>
+          <span class="category-tag">${escapeHTML(item.category)}</span>
+        </div>
+        <h3>${escapeHTML(item.name)}</h3>
+        <p>📍 ${escapeHTML(item.location)}</p>
+        <p>📅 ${formatDate(item.date)}</p>
+        <div class="card-actions">
+          <button class="small-btn" type="button" data-view="${escapeHTML(item.id)}">View Details</button>
+          ${showDelete ? `<button class="small-btn delete" type="button" data-delete="${escapeHTML(item.id)}">Delete</button>` : ""}
+        </div>
       </div>
-    `;
-
-    return;
-  }
-
-  container.innerHTML = items.map(item => `
-
-    <article class="card" data-id="${esc(item.id)}">
-
-      ${
-        item.photo
-        ? `<img src="${item.photo}" alt="">`
-        : `<div class="placeholder">📦</div>`
-      }
-
-      <div class="cardinfo">
-
-        <span class="tag ${esc(item.status)}">
-          ${esc(item.status)}
-        </span>
-
-        <h3>${esc(item.name)}</h3>
-
-        <p>📍 ${esc(item.location)}</p>
-
-        <p>
-          ${esc(item.category)}
-          ·
-          ${esc(item.date)}
-        </p>
-
-      </div>
-
     </article>
-
-  `).join("");
-
-  container.querySelectorAll("[data-id]").forEach(card => {
-
-    card.onclick = () => detail(card.dataset.id);
-
-  });
-
-}
-
-
-/* BROWSE AND FILTER */
-
-function browse() {
-
-  let term = $("search").value.toLowerCase();
-
-  let status = $("status").value;
-
-  let category = $("category").value;
-
-  let filtered = reports().filter(item => {
-
-    let matchSearch =
-      item.name.toLowerCase().includes(term) ||
-      item.location.toLowerCase().includes(term);
-
-    let matchStatus =
-      status === "all" || item.status === status;
-
-    let matchCategory =
-      category === "all" || item.category === category;
-
-    return matchSearch && matchStatus && matchCategory;
-
-  });
-
-  cards("allListings", filtered.reverse());
-
-}
-
-$("search").oninput = browse;
-$("status").onchange = browse;
-$("category").onchange = browse;
-
-
-/* ITEM DETAILS */
-
-function detail(key) {
-
-  let item = reports().find(x => x.id === key);
-
-  if (!item) return;
-
-  $("modalBody").innerHTML = `
-
-    <h2>${esc(item.name)}</h2>
-
-    <p><b>Status:</b> ${esc(item.status)}</p>
-
-    <p><b>Category:</b> ${esc(item.category)}</p>
-
-    <p><b>Location:</b> ${esc(item.location)}</p>
-
-    <p><b>Date:</b> ${esc(item.date)}</p>
-
-    <p>${esc(item.description)}</p>
-
-    <p>
-      <b>Posted by:</b>
-      ${esc(item.reporterName)}
-    </p>
-
-    <p>
-      <b>Contact:</b>
-      <a href="mailto:${encodeURIComponent(item.email)}">
-        ${esc(item.email)}
-      </a>
-    </p>
-
   `;
-
-  $("modal").classList.add("show");
-
 }
 
-$("close").onclick = () =>
-  $("modal").classList.remove("show");
+function renderBrowse() {
+  const keyword = $("searchInput").value.trim().toLowerCase();
+  const category = $("categoryFilter").value;
+  const status = $("statusFilter").value;
 
-$("modal").onclick = event => {
-
-  if (event.target === $("modal")) {
-    $("modal").classList.remove("show");
-  }
-
-};
-
-
-/* REPORT LOST OR FOUND */
-
-$("lostTab").onclick = () => setKind("Lost");
-
-$("foundTab").onclick = () => setKind("Found");
-
-function setKind(value) {
-
-  kind = value;
-
-  $("lostTab").classList.toggle("active", value === "Lost");
-
-  $("foundTab").classList.toggle("active", value === "Found");
-
-}
-
-
-function readFile(file) {
-
-  return new Promise((resolve, reject) => {
-
-    let reader = new FileReader();
-
-    reader.onload = () => resolve(reader.result);
-
-    reader.onerror = reject;
-
-    reader.readAsDataURL(file);
-
+  const filtered = reports.filter(item => {
+    const matchesKeyword =
+      `${item.name} ${item.location} ${item.description}`.toLowerCase().includes(keyword);
+    const matchesCategory = !category || item.category === category;
+    const matchesStatus = !status || item.type === status;
+    return matchesKeyword && matchesCategory && matchesStatus;
   });
 
+  $("listingGrid").innerHTML = filtered.map(item => createItemCard(item)).join("");
+  $("emptyBrowse").hidden = filtered.length > 0;
 }
 
-
-$("reportForm").onsubmit = async event => {
-
-  event.preventDefault();
-
-  let file = $("itemPhoto").files[0];
-
-  let photo = "";
-
-  if (file) {
-
-    if (file.size > 700 * 1024) {
-
-      alert("Please use an image smaller than 700KB.");
-
-      return;
-
-    }
-
-    photo = await readFile(file);
-
-  }
-
-  let item = {
-
-    id: id("CF"),
-
-    status: kind,
-
-    name: $("itemName").value.trim(),
-
-    category: $("itemCategory").value,
-
-    location: $("itemLocation").value.trim(),
-
-    date: $("itemDate").value,
-
-    description: $("itemDescription").value.trim(),
-
-    photo: photo,
-
-    reporterName: $("reporterName").value.trim(),
-
-    email: $("reporterEmail").value.trim()
-
-  };
-
-  let data = reports();
-
-  data.push(item);
-
-  saveReports(data);
-
-  alert("Your free report has been published.");
-
-  event.target.reset();
-
-  page("home");
-
-};
-
-
-/* MY REPORTS */
-
-$("loadMine").onclick = () => {
-
-  let email = $("myEmail").value.trim().toLowerCase();
+function renderMyReports() {
+  const email = $("myEmail").value.trim().toLowerCase();
 
   if (!email) {
-
-    alert("Enter the email used in your report.");
-
+    $("myReportsGrid").innerHTML = "";
+    $("emptyMine").textContent = "Enter your email to view your reports.";
+    $("emptyMine").hidden = false;
     return;
-
   }
 
-  let mine = reports().filter(item =>
+  const mine = reports.filter(item =>
     item.email.toLowerCase() === email
   );
 
-  cards("myListings", mine.reverse());
-
-};
-
-
-/* SMART QR PURCHASE - DEMO ONLY */
-
-$("buy").onclick = () => {
-
-  let confirmPurchase = confirm(
-    "Simulate a one-time RM5.00 purchase? No real payment will be taken."
-  );
-
-  if (!confirmPurchase) return;
-
-  localStorage.setItem(
-    PAID_KEY,
-    JSON.stringify({
-      paid: true,
-      amount: 5
-    })
-  );
-
-  $("ownerSetup").classList.remove("hidden");
-
-  $("qrResult").classList.add("hidden");
-
-  $("ownerSetup").scrollIntoView({
-    behavior: "smooth"
-  });
-
-  alert(
-    "Demo purchase successful. Complete your profile to create your QR."
-  );
-
-};
-
-
-/* CHECK PURCHASE STATUS */
-
-function qrState() {
-
-  let paid = JSON.parse(
-    localStorage.getItem(PAID_KEY) || "null"
-  );
-
-  let owner = JSON.parse(
-    localStorage.getItem(OWNER_KEY) || "null"
-  );
-
-  $("ownerSetup").classList.toggle(
-    "hidden",
-    !paid?.paid || !!owner
-  );
-
-  $("qrResult").classList.toggle(
-    "hidden",
-    !paid?.paid || !owner
-  );
-
-  if (paid?.paid && owner) {
-    makeQR(owner);
-  }
-
+  $("myReportsGrid").innerHTML = mine.map(item => createItemCard(item, true)).join("");
+  $("emptyMine").textContent = mine.length
+    ? ""
+    : "No reports found for this email address.";
+  $("emptyMine").hidden = mine.length > 0;
 }
 
+function showItemDetails(id) {
+  const item = reports.find(report => report.id === id);
+  if (!item) return;
 
-/* REGISTER OWNER PROFILE */
+  $("modalContent").innerHTML = `
+    ${item.photo ? `<img src="${item.photo}" alt="${escapeHTML(item.name)}">` : ""}
+    <span class="status ${item.type === "Found" ? "found" : ""}">${escapeHTML(item.type)}</span>
+    <h2>${escapeHTML(item.name)}</h2>
+    <p><strong>Category:</strong> ${escapeHTML(item.category)}</p>
+    <p><strong>Location:</strong> ${escapeHTML(item.location)}</p>
+    <p><strong>Date:</strong> ${formatDate(item.date)}</p>
+    <p><strong>Description:</strong><br>${escapeHTML(item.description)}</p>
+    <p><strong>Reported by:</strong> ${escapeHTML(item.reporter)}</p>
+    <p><strong>Contact:</strong> <a href="mailto:${encodeURIComponent(item.email)}">${escapeHTML(item.email)}</a></p>
+  `;
 
-$("ownerForm").onsubmit = event => {
+  $("itemModal").classList.add("show");
+  $("itemModal").setAttribute("aria-hidden", "false");
+}
 
+function deleteItem(id) {
+  const item = reports.find(report => report.id === id);
+  if (!item) return;
+
+  const confirmed = confirm(
+    `Are you sure you want to delete "${item.name}"?\n\nThis action cannot be undone.`
+  );
+
+  if (!confirmed) return;
+
+  reports = reports.filter(report => report.id !== id);
+  saveReports();
+  renderBrowse();
+  renderMyReports();
+
+  alert("Your report has been deleted successfully.");
+}
+
+function handleCardAction(event) {
+  const viewButton = event.target.closest("[data-view]");
+  const deleteButton = event.target.closest("[data-delete]");
+
+  if (viewButton) showItemDetails(viewButton.dataset.view);
+  if (deleteButton) deleteItem(deleteButton.dataset.delete);
+}
+
+async function readPhoto(file) {
+  if (!file) return "";
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Please select an image file.");
+  }
+  if (file.size > 700 * 1024) {
+    throw new Error("Image size must be 700KB or less.");
+  }
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Unable to read image."));
+    reader.readAsDataURL(file);
+  });
+}
+
+// Submit a free community report
+$("reportForm").addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  let paid = JSON.parse(
-    localStorage.getItem(PAID_KEY) || "null"
-  );
+  const button = event.submitter;
+  button.disabled = true;
+  button.textContent = "Publishing...";
 
-  if (!paid?.paid) {
+  try {
+    const photo = await readPhoto($("itemPhoto").files[0]);
 
-    alert("Purchase Smart QR first.");
+    const item = {
+      id: makeId(),
+      type: $("reportType").value,
+      name: $("itemName").value.trim(),
+      category: $("itemCategory").value,
+      location: $("itemLocation").value.trim(),
+      date: $("itemDate").value,
+      reporter: $("reporterName").value.trim(),
+      email: $("reporterEmail").value.trim().toLowerCase(),
+      description: $("itemDescription").value.trim(),
+      photo,
+      createdAt: new Date().toISOString()
+    };
 
-    return;
+    reports.unshift(item);
+    saveReports();
 
+    $("reportForm").reset();
+    $("reportMessage").textContent = "Your report has been published successfully!";
+    renderBrowse();
+
+    $("myEmail").value = item.email;
+    renderMyReports();
+
+    document.querySelector("#browse").scrollIntoView({ behavior: "smooth" });
+  } catch (error) {
+    $("reportMessage").textContent = error.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = "Publish Report";
+  }
+});
+
+// Search and filter
+["searchInput", "categoryFilter", "statusFilter"].forEach(id => {
+  $(id).addEventListener("input", renderBrowse);
+});
+
+$("findReportsBtn").addEventListener("click", renderMyReports);
+$("myEmail").addEventListener("keydown", event => {
+  if (event.key === "Enter") renderMyReports();
+});
+
+// View and delete buttons
+$("listingGrid").addEventListener("click", handleCardAction);
+$("myReportsGrid").addEventListener("click", handleCardAction);
+
+// Close item details modal
+$("closeModal").addEventListener("click", () => {
+  $("itemModal").classList.remove("show");
+  $("itemModal").setAttribute("aria-hidden", "true");
+});
+
+$("itemModal").addEventListener("click", event => {
+  if (event.target === $("itemModal")) {
+    $("itemModal").classList.remove("show");
+    $("itemModal").setAttribute("aria-hidden", "true");
+  }
+});
+
+// Mobile navigation
+$("menuToggle").addEventListener("click", () => {
+  $("mainNav").classList.toggle("open");
+});
+
+$("mainNav").querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => $("mainNav").classList.remove("open"));
+});
+
+// Smart QR demo purchase
+$("buyQrBtn").addEventListener("click", () => {
+  const purchased = localStorage.getItem(QR_KEY) === "true";
+
+  if (!purchased) {
+    const confirmPurchase = confirm(
+      "Get your personal Smart QR for the demo price of RM5?\n\nThis is a demo only. No real payment will be collected."
+    );
+    if (!confirmPurchase) return;
+
+    localStorage.setItem(QR_KEY, "true");
   }
 
-  let owner = {
+  showOwnerSetup();
+});
 
-    id: id("OWNER"),
+function showOwnerSetup() {
+  const owner = JSON.parse(localStorage.getItem(OWNER_KEY) || "null");
 
-    name: $("ownerName").value.trim(),
+  $("modalContent").innerHTML = `
+    <h2>Set Up Your Personal Smart QR</h2>
+    <p>Enter your details to create your personal owner contact page.</p>
+    <form id="ownerSetupForm">
+      <label>Your Name
+        <input id="ownerName" required maxlength="70" value="${escapeHTML(owner?.name || "")}">
+      </label><br>
+      <label>Your Email
+        <input id="ownerEmail" type="email" required value="${escapeHTML(owner?.email || "")}">
+      </label><br>
+      <label>Short Message
+        <textarea id="ownerNote" rows="3" placeholder="Example: Please contact me if you find my belongings.">${escapeHTML(owner?.note || "")}</textarea>
+      </label><br>
+      <button class="btn btn-red" type="submit">Generate My QR</button>
+    </form>
+    <div id="qrResult"></div>
+  `;
 
-    email: $("ownerEmail").value.trim(),
+  $("itemModal").classList.add("show");
+  $("itemModal").setAttribute("aria-hidden", "false");
 
-    message: $("ownerMessage").value.trim()
+  $("ownerSetupForm").addEventListener("submit", event => {
+    event.preventDefault();
 
-  };
+    const profile = {
+      name: $("ownerName").value.trim(),
+      email: $("ownerEmail").value.trim(),
+      note: $("ownerNote").value.trim()
+    };
 
-  localStorage.setItem(
-    OWNER_KEY,
-    JSON.stringify(owner)
-  );
-
-  qrState();
-
-};
-
-
-/* GENERATE QR LINK */
-
-function qrLink(owner) {
-
-  let url = new URL(window.location.href);
-
-  url.search = "";
-
-  url.hash = "";
-
-  url.searchParams.set(
-    "owner",
-    btoa(
-      unescape(
-        encodeURIComponent(
-          JSON.stringify(owner)
-        )
-      )
-    )
-  );
-
-  return url.href;
-
+    localStorage.setItem(OWNER_KEY, JSON.stringify(profile));
+    generateOwnerQR(profile);
+  });
 }
 
+function generateOwnerQR(profile) {
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(profile))));
+  const contactUrl = new URL(window.location.href);
+  contactUrl.search = "";
+  contactUrl.hash = "";
+  contactUrl.searchParams.set("owner", encoded);
 
-/* CREATE QR CODE */
-
-function makeQR(owner) {
+  const result = $("qrResult");
+  result.innerHTML = `
+    <h3>Your Smart QR is ready!</h3>
+    <div id="qrCode" class="qr-output"></div>
+    <p>Save this QR code and attach it to your belongings.</p>
+    <button class="btn btn-navy" id="downloadQr" type="button">Download QR Code</button>
+    <button class="small-btn" id="copyQrLink" type="button">Copy Contact Link</button>
+  `;
 
   if (typeof QRCode === "undefined") {
-
-    alert("QR generator did not load. Check your internet connection.");
-
+    result.insertAdjacentHTML("beforeend",
+      "<p>QR generator could not load. Please check your internet connection and try again.</p>");
     return;
-
   }
 
-  $("qrcode").innerHTML = "";
-
-  new QRCode($("qrcode"), {
-
-    text: qrLink(owner),
-
-    width: 190,
-
-    height: 190,
-
-    colorDark: "#101d3a",
-
-    colorLight: "#ffffff",
-
-    correctLevel: QRCode.CorrectLevel.H
-
+  new QRCode($("qrCode"), {
+    text: contactUrl.href,
+    width: 210,
+    height: 210,
+    correctLevel: QRCode.CorrectLevel.M
   });
 
-  $("qrName").textContent = owner.name;
+  $("downloadQr").addEventListener("click", () => {
+    const canvas = $("qrCode").querySelector("canvas");
+    const image = $("qrCode").querySelector("img");
+    const dataUrl = canvas
+      ? canvas.toDataURL("image/png")
+      : image?.src;
 
-  $("qrId").textContent =
-    "PERSONAL QR ID: " + owner.id;
+    if (!dataUrl) {
+      alert("QR code is not ready yet. Please try again.");
+      return;
+    }
 
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = "CoFind-SmartQR.png";
+    link.click();
+  });
+
+  $("copyQrLink").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(contactUrl.href);
+      alert("Contact link copied!");
+    } catch {
+      prompt("Copy this contact link:", contactUrl.href);
+    }
+  });
 }
 
+// Owner contact page opened when someone scans a Smart QR
+function loadOwnerPage() {
+  const params = new URLSearchParams(window.location.search);
+  const encoded = params.get("owner");
 
-/* DOWNLOAD QR */
-
-$("download").onclick = () => {
-
-  let canvas = $("qrcode").querySelector("canvas");
-
-  let image = $("qrcode").querySelector("img");
-
-  let source = canvas
-    ? canvas.toDataURL("image/png")
-    : image?.src;
-
-  if (!source) {
-
-    alert("QR is not ready.");
-
-    return;
-
-  }
-
-  let link = document.createElement("a");
-
-  link.href = source;
-
-  link.download = "CoFind-Smart-QR.png";
-
-  link.click();
-
-};
-
-
-/* COPY QR LINK */
-
-$("copy").onclick = async () => {
-
-  let owner = JSON.parse(
-    localStorage.getItem(OWNER_KEY) || "null"
-  );
-
-  if (!owner) return;
-
-  let link = qrLink(owner);
+  if (!encoded) return;
 
   try {
+    const profile = JSON.parse(decodeURIComponent(escape(atob(encoded))));
 
-    await navigator.clipboard.writeText(link);
+    document.querySelector("main").hidden = true;
+    document.querySelector(".header").hidden = true;
+    document.querySelector(".footer").hidden = true;
+    $("ownerPage").hidden = false;
 
-    alert("QR link copied.");
+    $("ownerIntro").textContent =
+      `${profile.name} has a CoFind Smart QR. ${profile.note || "Please use this form to contact the owner."}`;
 
+    $("ownerContactForm").addEventListener("submit", event => {
+      event.preventDefault();
+
+      const finderName = $("finderName").value.trim();
+      const finderEmail = $("finderEmail").value.trim();
+      const message = $("finderMessage").value.trim();
+
+      const subject = encodeURIComponent("CoFind - Someone scanned your Smart QR");
+      const body = encodeURIComponent(
+        `Hello ${profile.name},\n\nSomeone has contacted you through your CoFind Smart QR.\n\nName: ${finderName}\nEmail: ${finderEmail}\nMessage: ${message}`
+      );
+
+      $("ownerMessage").textContent =
+        "Your email app will open so you can send the message to the owner.";
+
+      window.location.href =
+        `mailto:${encodeURIComponent(profile.email)}?subject=${subject}&body=${body}`;
+    });
   } catch {
-
-    prompt("Copy this link:", link);
-
+    alert("This Smart QR contact link is invalid.");
   }
-
-};
-
-
-/* OPEN OWNER PAGE WHEN QR IS SCANNED */
-
-function openOwner(encoded) {
-
-  try {
-
-    scannedOwner = JSON.parse(
-      decodeURIComponent(
-        escape(
-          atob(encoded)
-        )
-      )
-    );
-
-    $("publicName").textContent = scannedOwner.name;
-
-    $("publicMessage").textContent =
-      scannedOwner.message ||
-      "If you found an item belonging to this person, please contact them using the form below.";
-
-    page("ownerPage");
-
-  } catch {
-
-    alert("Invalid Smart QR link.");
-
-    page("home");
-
-  }
-
 }
 
-
-/* CONTACT OWNER */
-
-$("finderForm").onsubmit = event => {
-
-  event.preventDefault();
-
-  if (!scannedOwner?.email) {
-
-    alert("Owner contact is unavailable.");
-
-    return;
-
-  }
-
-  let subject = encodeURIComponent(
-    "CoFind: I found your belongings"
-  );
-
-  let body = encodeURIComponent(`
-
-Hello ${scannedOwner.name},
-
-${$("finderText").value}
-
-From: ${$("finderName").value}
-
-Reply email: ${$("finderEmail").value}
-
-Sent through CoFind Smart QR.
-
-  `);
-
-  location.href =
-    `mailto:${encodeURIComponent(scannedOwner.email)}?subject=${subject}&body=${body}`;
-
-};
-
-
-/* INITIALIZE WEBSITE */
-
-function init() {
-
-  let params = new URLSearchParams(window.location.search);
-
-  let owner = params.get("owner");
-
-  if (owner) {
-
-    openOwner(owner);
-
-  } else {
-
-    home();
-
-    page("home");
-
-  }
-
-}
-
-init();
+// Initial page setup
+renderBrowse();
+renderMyReports();
+loadOwnerPage();
+/
