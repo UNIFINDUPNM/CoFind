@@ -828,3 +828,42 @@ label {
   }
 }
 
+.payment-box {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.payment-box h2 {
+  margin-bottom: 10px;
+}
+
+.payment-amount {
+  font-size: 38px;
+  font-weight: 800;
+  margin: 20px 0;
+  color: var(--red);
+}
+
+.payment-qr {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+  padding: 15px;
+  background: white;
+  width: fit-content;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.payment-qr img,
+.payment-qr canvas {
+  display: block;
+  max-width: 100%;
+}
+
+.payment-box .demo-note {
+  font-size: 12px;
+  color: var(--grey);
+  margin: 15px 0 20px;
+}
+
