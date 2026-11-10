@@ -4,12 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CoFind | UPNM Lost & Found</title>
+  <meta name="theme-color" content="#142d50">
+  <title>CoFind | Lost Today, Found Together</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<header class="header">
+<header class="header" id="header">
   <a href="#" class="logo" data-page="home">
     <span class="logo-icon">C</span>
     <span>CoFind</span>
@@ -22,31 +24,41 @@
     <button class="nav-link" data-page="browse">Browse Items</button>
     <button class="nav-link" data-page="report">Post a Report</button>
     <button class="nav-link" data-page="smartqr">Smart QR</button>
+    <button class="nav-link" data-page="readycard">ReadyCard</button>
     <button class="nav-link" data-page="myreports">My Reports</button>
   </nav>
 </header>
 
-<main>
+<main id="mainContent">
 
-  <!-- HOME PAGE -->
+  <!-- HOME -->
   <section class="page active" id="home">
+
     <div class="hero">
       <div class="hero-content">
         <p class="eyebrow">UPNM LOST & FOUND COMMUNITY</p>
+
         <h1>Lost Today,<br><span>Found Together.</span></h1>
+
         <p class="hero-description">
           Helping the campus community reconnect with their lost belongings
           through a simple and convenient platform.
         </p>
 
         <div class="hero-buttons">
-          <button class="btn primary" data-page="browse">Browse Items</button>
-          <button class="btn secondary" data-page="report">Post a Report</button>
+          <button class="btn primary" data-page="browse">
+            Browse Items
+          </button>
+
+          <button class="btn secondary" data-page="report">
+            Post a Report
+          </button>
         </div>
       </div>
 
       <div class="hero-visual">
         <div class="hero-circle">C</div>
+
         <div class="hero-note">
           <span class="check-icon">✓</span>
           <div>
@@ -58,31 +70,35 @@
     </div>
 
     <div class="home-info">
-      <h2>How CoFind Works</h2>
+      <h2>Explore CoFind</h2>
+
       <div class="info-grid">
+
         <article class="info-card">
           <span>01</span>
-          <h3>Report an Item</h3>
-          <p>Submit details about an item you have lost or found.</p>
+          <h3>Lost & Found</h3>
+          <p>Report and browse lost or found belongings.</p>
         </article>
 
         <article class="info-card">
           <span>02</span>
-          <h3>Browse Items</h3>
-          <p>Explore reports shared by the campus community.</p>
+          <h3>Smart QR</h3>
+          <p>Create a personal QR contact page.</p>
         </article>
 
         <article class="info-card">
           <span>03</span>
-          <h3>Reconnect</h3>
-          <p>Contact the owner through WhatsApp to arrange a return.</p>
+          <h3>ReadyCard</h3>
+          <p>Prepare a personal emergency information QR.</p>
         </article>
+
       </div>
     </div>
   </section>
 
-  <!-- BROWSE PAGE -->
+  <!-- BROWSE ITEMS -->
   <section class="page" id="browse">
+
     <div class="page-heading">
       <p class="eyebrow">COMMUNITY LISTINGS</p>
       <h1>Browse Items</h1>
@@ -111,10 +127,12 @@
 
     <div class="listing-grid" id="listingGrid"></div>
     <p class="empty-message" id="emptyBrowse">No items found.</p>
+
   </section>
 
-  <!-- POST REPORT PAGE -->
+  <!-- POST REPORT -->
   <section class="page" id="report">
+
     <div class="page-heading">
       <p class="eyebrow">COMMUNITY REPORT</p>
       <h1>Post a Report</h1>
@@ -122,6 +140,7 @@
     </div>
 
     <form id="reportForm" class="form-card">
+
       <label for="reportType">Report Type</label>
       <select id="reportType" required>
         <option value="lost">I Lost an Item</option>
@@ -168,29 +187,106 @@
     </form>
   </section>
 
-  <!-- SMART QR PAGE -->
+  <!-- SMART QR -->
   <section class="page" id="smartqr">
+
     <div class="page-heading">
       <p class="eyebrow">QUICK CONTACT FEATURE</p>
       <h1>Smart QR</h1>
-      <p>Create a personal QR code to help people contact you if they find your belongings.</p>
+      <p>Create a personal QR code to help people contact you.</p>
     </div>
 
     <div class="qr-card">
       <div class="qr-icon">▦</div>
+
       <h2>Your Personal QR Code</h2>
+
       <p>
-        Generate a QR code connected to your contact page.
-        Anyone who scans it can contact you through WhatsApp.
+        Generate a QR code connected to your personal contact page.
       </p>
-      <div class="qr-price">RM5 <small>/ demo price</small></div>
-      <p class="demo-note">Demo feature only. No actual payment is required.</p>
-      <button class="btn primary" id="buyQrBtn">Create My QR</button>
+
+      <div class="qr-price">
+        RM5 <small>/ demo price</small>
+      </div>
+
+      <p class="demo-note">
+        Demo feature only. No actual payment is required.
+      </p>
+
+      <button class="btn primary" id="buyQrBtn">
+        Create My QR
+      </button>
     </div>
   </section>
 
-  <!-- MY REPORTS PAGE -->
+  <!-- READYCARD -->
+  <section class="page" id="readycard">
+
+    <div class="page-heading">
+      <p class="eyebrow">PERSONAL SAFETY FEATURE</p>
+      <h1>ReadyCard</h1>
+
+      <p>
+        Your personal emergency information, accessible through a QR code.
+      </p>
+    </div>
+
+    <div class="readycard-intro">
+
+      <div class="readycard-symbol">✚</div>
+
+      <h2>Personal Safety Card</h2>
+
+      <p>
+        Prepare your emergency details and create a QR code
+        that can help others access important information when needed.
+      </p>
+
+      <div class="readycard-price">
+        RM1.00 <small>/ demo price</small>
+      </div>
+
+      <p class="demo-note">
+        Mini Card and Keychain are available at the same demo price.
+      </p>
+
+      <button class="btn primary" id="startReadyCard">
+        Create My ReadyCard
+      </button>
+
+    </div>
+
+    <div class="readycard-benefits">
+      <h2>How ReadyCard Works</h2>
+
+      <div class="info-grid">
+
+        <article class="info-card">
+          <span>01</span>
+          <h3>Fill in Details</h3>
+          <p>Provide your emergency and contact information.</p>
+        </article>
+
+        <article class="info-card">
+          <span>02</span>
+          <h3>Choose Your Product</h3>
+          <p>Select a Mini Card or Keychain.</p>
+        </article>
+
+        <article class="info-card">
+          <span>03</span>
+          <h3>Generate QR</h3>
+          <p>Complete the demo payment and generate your QR.</p>
+        </article>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- MY REPORTS -->
   <section class="page" id="myreports">
+
     <div class="page-heading">
       <p class="eyebrow">PERSONAL DASHBOARD</p>
       <h1>My Reports</h1>
@@ -199,41 +295,83 @@
 
     <div class="my-reports-search">
       <label for="myPhone">Enter your WhatsApp number</label>
+
       <div class="search-row">
         <input id="myPhone" type="tel" placeholder="e.g. 0123456789">
-        <button class="btn primary" id="findReportsBtn">Find Reports</button>
+
+        <button class="btn primary" id="findReportsBtn">
+          Find Reports
+        </button>
       </div>
     </div>
 
     <div class="tabs">
-      <button class="tab-btn active" data-tab="active">Active Reports</button>
-      <button class="tab-btn" data-tab="resolved">Resolved Reports</button>
+      <button class="tab-btn active" data-tab="active">
+        Active Reports
+      </button>
+
+      <button class="tab-btn" data-tab="resolved">
+        Resolved Reports
+      </button>
     </div>
 
     <div class="listing-grid" id="myReportsGrid"></div>
+
     <p class="empty-message" id="emptyMine">
       Enter your WhatsApp number to view your reports.
     </p>
+
   </section>
 
 </main>
 
-<!-- ITEM DETAILS MODAL -->
+<!-- GENERAL MODAL -->
 <div class="modal" id="itemModal" hidden>
   <div class="modal-box">
-    <button class="modal-close" id="closeModal" aria-label="Close">&times;</button>
+
+    <button class="modal-close" id="closeModal" aria-label="Close">
+      &times;
+    </button>
+
     <div id="modalContent"></div>
+
   </div>
 </div>
 
-<!-- SMART QR OWNER CONTACT PAGE -->
-<section class="owner-page" id="ownerPage" hidden>
+<!-- READYCARD QR SCAN PAGE -->
+<section class="owner-page" id="readyOwnerPage" hidden>
+
   <div class="owner-card">
+
+    <div class="owner-logo">+</div>
+
+    <p class="eyebrow">COFIND READYCARD</p>
+
+    <h2>Personal Safety Information</h2>
+
+    <div id="readyOwnerInfo"></div>
+
+    <p class="safety-note">
+      This information is provided by the card owner.
+    </p>
+
+  </div>
+
+</section>
+
+<!-- SMART QR OWNER PAGE -->
+<section class="owner-page" id="ownerPage" hidden>
+
+  <div class="owner-card">
+
     <div class="owner-logo">C</div>
+
     <p class="eyebrow">COFIND SMART QR</p>
+
     <div id="ownerIntro"></div>
 
     <form id="ownerContactForm">
+
       <label for="finderName">Your Name</label>
       <input id="finderName" type="text" required>
 
@@ -243,16 +381,24 @@
       <label for="finderMessage">Message</label>
       <textarea id="finderMessage" rows="4" placeholder="Tell the owner what you found..."></textarea>
 
-      <button class="btn primary full-width" type="submit">Contact Owner on WhatsApp</button>
+      <button class="btn primary full-width" type="submit">
+        Contact Owner on WhatsApp
+      </button>
+
       <p id="ownerMessage" class="form-message"></p>
+
     </form>
+
   </div>
+
 </section>
 
 <footer class="footer">
   <h3>CoFind</h3>
   <p>Lost Today, Found Together.</p>
-  <p class="footer-small">UPNM Lost & Found Community | Student Demo Project</p>
+  <p class="footer-small">
+    UPNM Lost & Found Community | Student Demo Project
+  </p>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -260,6 +406,7 @@
 
 </body>
 </html>
+
 
 
 

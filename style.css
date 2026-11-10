@@ -1,12 +1,18 @@
 
+/* =====================================
+   COFIND - MAIN STYLESHEET
+===================================== */
+
 :root {
   --navy: #142d50;
+  --navy-light: #203f68;
   --red: #d83d4b;
   --white: #ffffff;
   --light: #f4f6fa;
   --grey: #758195;
   --border: #e1e5ec;
   --green: #16804c;
+  --gold: #d6a83d;
 }
 
 * {
@@ -26,7 +32,10 @@ body {
   line-height: 1.6;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -38,7 +47,9 @@ button {
   display: none !important;
 }
 
-/* HEADER */
+/* =====================================
+   HEADER
+===================================== */
 
 .header {
   min-height: 88px;
@@ -77,16 +88,16 @@ button {
 #mainNav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
 }
 
 .nav-link {
   border: none;
   background: transparent;
   color: var(--navy);
-  padding: 11px 13px;
+  padding: 11px 12px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -104,31 +115,36 @@ button {
   font-size: 27px;
 }
 
-/* PAGE NAVIGATION */
+/* =====================================
+   PAGE NAVIGATION
+===================================== */
 
 .page {
   display: none;
   min-height: 65vh;
   padding: 55px 7%;
-  animation: appear 0.25s ease;
+  animation: pageAppear 0.25s ease;
 }
 
 .page.active {
   display: block;
 }
 
-@keyframes appear {
+@keyframes pageAppear {
   from {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* HOME */
+/* =====================================
+   HOME PAGE
+===================================== */
 
 #home {
   padding: 0;
@@ -141,8 +157,11 @@ button {
   grid-template-columns: 1.1fr 0.9fr;
   align-items: center;
   gap: 35px;
-  background:
-    linear-gradient(115deg, #f7f8fb 65%, #e8edf5 65%);
+  background: linear-gradient(
+    115deg,
+    #f7f8fb 65%,
+    #e8edf5 65%
+  );
 }
 
 .eyebrow {
@@ -293,7 +312,9 @@ button {
   color: var(--grey);
 }
 
-/* PAGE HEADINGS */
+/* =====================================
+   PAGE HEADINGS
+===================================== */
 
 .page-heading {
   text-align: center;
@@ -310,7 +331,9 @@ button {
   color: var(--grey);
 }
 
-/* BUTTONS AND INPUTS */
+/* =====================================
+   BUTTONS AND INPUTS
+===================================== */
 
 input,
 select,
@@ -341,7 +364,9 @@ label {
   width: 100%;
 }
 
-/* BROWSE */
+/* =====================================
+   BROWSE ITEMS
+===================================== */
 
 .filter-bar {
   display: grid;
@@ -446,7 +471,9 @@ label {
   padding: 35px 10px;
 }
 
-/* REPORT FORM */
+/* =====================================
+   REPORT FORM
+===================================== */
 
 .form-card {
   background: white;
@@ -468,7 +495,9 @@ label {
   font-weight: 700;
 }
 
-/* SMART QR */
+/* =====================================
+   SMART QR
+===================================== */
 
 .qr-card {
   max-width: 550px;
@@ -507,8 +536,10 @@ label {
   color: var(--grey);
 }
 
-.qr-card .demo-note {
+.demo-note {
   font-size: 12px;
+  color: var(--grey);
+  margin: 15px 0;
 }
 
 .qr-output {
@@ -527,7 +558,9 @@ label {
   max-width: 100%;
 }
 
-/* MY REPORTS */
+/* =====================================
+   MY REPORTS
+===================================== */
 
 .my-reports-search {
   max-width: 650px;
@@ -566,7 +599,257 @@ label {
   border-color: var(--navy);
 }
 
-/* MODAL */
+/* =====================================
+   READY CARD INTRO
+===================================== */
+
+.readycard-intro {
+  max-width: 650px;
+  margin: 0 auto 55px;
+  padding: 45px 35px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 8px 25px #142d5009;
+}
+
+.readycard-symbol {
+  width: 80px;
+  height: 80px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 20px;
+  border-radius: 22px;
+  background: #fff0f1;
+  color: var(--red);
+  font-size: 45px;
+  font-weight: 800;
+}
+
+.readycard-intro h2 {
+  font-size: 27px;
+  margin-bottom: 12px;
+}
+
+.readycard-intro > p {
+  color: var(--grey);
+  margin-bottom: 15px;
+}
+
+.readycard-price {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 20px 0 0;
+}
+
+.readycard-price small {
+  color: var(--grey);
+  font-size: 13px;
+}
+
+.readycard-benefits {
+  text-align: center;
+}
+
+.readycard-benefits h2 {
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+/* =====================================
+   READY CARD FORM
+===================================== */
+
+.ready-form {
+  max-width: 650px;
+  margin: auto;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.ready-form h2 {
+  margin-bottom: 12px;
+}
+
+.ready-form > p {
+  color: var(--grey);
+  margin-bottom: 20px;
+}
+
+.ready-form textarea {
+  resize: vertical;
+}
+
+.blood-type-select {
+  font-weight: 700;
+}
+
+.consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.consent-row input {
+  width: auto;
+  margin-top: 5px;
+}
+
+.consent-row label {
+  margin: 0;
+  font-size: 13px;
+  color: var(--grey);
+  font-weight: 400;
+}
+
+/* =====================================
+   READY CARD PRODUCT OPTIONS
+===================================== */
+
+.product-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin: 25px 0;
+}
+
+.product-option {
+  display: block;
+  border: 2px solid var(--border);
+  border-radius: 13px;
+  padding: 20px;
+  text-align: center;
+  background: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.product-option:hover {
+  border-color: var(--red);
+}
+
+.product-option.selected {
+  border-color: var(--red);
+  background: #fff5f5;
+}
+
+.product-option input {
+  width: auto;
+  margin-bottom: 10px;
+}
+
+.product-option h3 {
+  margin-bottom: 8px;
+}
+
+.product-option p {
+  color: var(--grey);
+  font-size: 13px;
+}
+
+.product-icon {
+  font-size: 45px;
+  margin-bottom: 10px;
+}
+
+/* =====================================
+   READY CARD PAYMENT
+===================================== */
+
+.payment-box {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.payment-box h2 {
+  margin-bottom: 10px;
+}
+
+.payment-amount {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--red);
+  margin: 20px 0;
+}
+
+.payment-qr {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+  padding: 15px;
+  background: white;
+  width: fit-content;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.payment-qr img,
+.payment-qr canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* =====================================
+   READY CARD RESULT
+===================================== */
+
+.ready-result {
+  text-align: center;
+  padding: 15px 0;
+}
+
+.ready-result h2 {
+  margin-bottom: 12px;
+}
+
+.ready-result p {
+  color: var(--grey);
+  margin-bottom: 15px;
+}
+
+.ready-qr-display {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  width: fit-content;
+  margin: 20px auto;
+}
+
+.ready-qr-display img,
+.ready-qr-display canvas {
+  display: block;
+  max-width: 100%;
+}
+
+.ready-product-label {
+  display: inline-block;
+  background: #e8edf5;
+  color: var(--navy);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 800;
+  margin: 10px 0;
+}
+
+.safety-note {
+  font-size: 12px;
+  color: var(--grey);
+  margin-top: 20px;
+  padding: 12px;
+  background: #f4f6fa;
+  border-radius: 8px;
+}
+
+/* =====================================
+   GENERAL MODAL
+===================================== */
 
 .modal {
   position: fixed;
@@ -619,7 +902,9 @@ label {
   margin-bottom: 18px;
 }
 
-/* QR OWNER PAGE */
+/* =====================================
+   QR OWNER PAGES
+===================================== */
 
 .owner-page {
   min-height: 80vh;
@@ -655,12 +940,27 @@ label {
   margin-bottom: 10px;
 }
 
-.owner-card #ownerIntro {
+.owner-card #ownerIntro,
+.owner-card #readyOwnerInfo {
   margin-bottom: 20px;
   color: var(--grey);
 }
 
-/* FOOTER */
+.owner-card #readyOwnerInfo p {
+  padding: 12px;
+  margin: 10px 0;
+  background: #f4f6fa;
+  border-radius: 8px;
+  overflow-wrap: anywhere;
+}
+
+.owner-card #readyOwnerInfo strong {
+  color: var(--navy);
+}
+
+/* =====================================
+   FOOTER
+===================================== */
 
 .footer {
   padding: 35px 20px;
@@ -679,9 +979,12 @@ label {
   font-size: 12px;
 }
 
-/* TABLET */
+/* =====================================
+   TABLET
+===================================== */
 
 @media (max-width: 900px) {
+
   .header {
     padding: 14px 4%;
   }
@@ -691,8 +994,8 @@ label {
   }
 
   .nav-link {
-    padding: 10px 8px;
-    font-size: 12px;
+    padding: 10px 7px;
+    font-size: 11px;
   }
 
   .hero {
@@ -702,11 +1005,15 @@ label {
   .listing-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
 }
 
-/* MOBILE */
+/* =====================================
+   MOBILE
+===================================== */
 
 @media (max-width: 650px) {
+
   .header {
     min-height: 75px;
     padding: 12px 20px;
@@ -802,8 +1109,17 @@ label {
     grid-template-columns: 1fr;
   }
 
-  .form-card {
+  .form-card,
+  .ready-form {
     padding: 23px 18px;
+  }
+
+  .readycard-intro {
+    padding: 32px 20px;
+  }
+
+  .product-options {
+    grid-template-columns: 1fr;
   }
 
   .search-row {
@@ -826,44 +1142,7 @@ label {
   .owner-card {
     padding: 25px 20px;
   }
+
 }
 
-.payment-box {
-  text-align: center;
-  padding: 10px 0;
-}
-
-.payment-box h2 {
-  margin-bottom: 10px;
-}
-
-.payment-amount {
-  font-size: 38px;
-  font-weight: 800;
-  margin: 20px 0;
-  color: var(--red);
-}
-
-.payment-qr {
-  display: flex;
-  justify-content: center;
-  margin: 20px auto;
-  padding: 15px;
-  background: white;
-  width: fit-content;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-
-.payment-qr img,
-.payment-qr canvas {
-  display: block;
-  max-width: 100%;
-}
-
-.payment-box .demo-note {
-  font-size: 12px;
-  color: var(--grey);
-  margin: 15px 0 20px;
-}
 
